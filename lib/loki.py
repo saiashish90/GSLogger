@@ -4,13 +4,15 @@ curr_datetime = time.time_ns()
 
 # initialize the loki client class
 class Loki:
-    def __init__(self):
-        try:
-            url = os.environ["LOKI_URL"]
-        except KeyError:
-            print("Please set the LOKI_URL environment variable")
-            exit(1)
-        self.url = url
+    def __init__(self, url=None):
+        if url:
+            self.url = url
+        else:
+            try:
+                self.url = os.environ["LOKI_URL"]
+            except KeyError:
+                print("Please set the LOKI_URL environment variable")
+                exit(1)
 
     # function to post logs to loki
     def info(self, msg, **tags):
