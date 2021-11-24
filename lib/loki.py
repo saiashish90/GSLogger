@@ -1,7 +1,4 @@
-import requests
-import json
-import time
-import os
+import requests, json, os, time, traceback
 
 curr_datetime = time.time_ns()
 
@@ -48,7 +45,14 @@ class Loki:
         # Constructing the payload
         curr_datetime = time.time_ns()
         payload = json.dumps(
-            {"streams": [{"stream": tags, "values": [[curr_datetime, f"[ERROR] {msg}"]]}]}
+            {
+                "streams": [
+                    {
+                        "stream": tags,
+                        "values": [[curr_datetime, f"[ERROR] {msg} \n {traceback.format_exc()}"]],
+                    }
+                ]
+            }
         )
         # Posting the payload
         headers = {"Content-Type": "application/json"}

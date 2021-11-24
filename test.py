@@ -5,4 +5,9 @@ import os
 load_dotenv()
 
 logger = Loki()
-logger.info("This is a test message", **{"clientID": "runId"}, name="test")
+import traceback
+
+try:
+    raise KeyError
+except Exception as e:
+    logger.error("This is a test message", **{"clientID": "runId1"}, name="test")
