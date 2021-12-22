@@ -63,4 +63,4 @@ class Loki:
             print("Error posting to Loki")
         else:
             print(f"[ERROR] {msg}")
-            print(traceback.format_exc())
+            #print(traceback.format_exc())
