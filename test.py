@@ -6,6 +6,7 @@ logger = Loki(
 )
 import traceback
 
+
 try:
     raise KeyError
 except Exception as e:
