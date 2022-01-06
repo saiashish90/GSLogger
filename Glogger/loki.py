@@ -71,7 +71,7 @@ class Loki:
                     "streams": [
                         {
                             "stream": tags,
-                            "values": [[curr_datetime, f"[ERROR] {msg} \n {''.join(traceback.format_tb(exception.__traceback__))}"]],
+                            "values": [[curr_datetime, f"[ERROR] {msg} \n {''.join(traceback.format_exception(etype=type(exception),value=exception,tb=exception.__traceback__))}"]],
                         }
                     ]
                 }
