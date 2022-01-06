@@ -49,21 +49,33 @@ class Loki:
         else:
             print(f"[WARNING] {msg}")
 
-    def error(self, msg, **tags):
+    def error(self, msg, exception=None, **tags):
         # Constructing the payload
         curr_datetime = time.time_ns()
         # append the class tags to the tags
         tags.update(self.tags)
-        payload = json.dumps(
-            {
-                "streams": [
-                    {
-                        "stream": tags,
-                        "values": [[curr_datetime, f"[ERROR] {msg} \n {traceback.format_exc()}"]],
-                    }
-                ]
-            }
-        )
+        if not exception:
+            payload = json.dumps(
+                {
+                    "streams": [
+                        {
+                            "stream": tags,
+                            "values": [[curr_datetime, f"[ERROR] {msg} \n {traceback.format_exc()}"]],
+                        }
+                    ]
+                }
+            )
+        else:
+            payload = json.dumps(
+                {
+                    "streams": [
+                        {
+                            "stream": tags,
+                            "values": [[curr_datetime, f"[ERROR] {msg} \n {''.join(traceback.format_tb(exception.__traceback__))}"]],
+                        }
+                    ]
+                }
+            )
         # Posting the payload
         headers = {"Content-Type": "application/json"}
         r = requests.post(self.url, data=payload, headers=headers)
