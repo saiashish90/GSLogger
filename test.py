@@ -1,9 +1,10 @@
 from Glogger import Loki
 import os
+from config import P
 
+creds = P()
 
-logger = Loki(
-)
+logger = Loki(config=creds)
 import traceback
 
 

@@ -1,12 +1,16 @@
 import requests, json, os, time, traceback
+from pydantic import BaseSettings
 
 curr_datetime = time.time_ns()
 
 # initialize the loki client class
 class Loki:
-    def __init__(self, url=None, **tags):
+    def __init__(self, url=None, config=None, **tags):
         if url:
             self.url = url
+        if isinstance(config, BaseSettings):
+            print("yes")
+            self.url = config.url
         else:
             try:
                 self.url = os.environ["LOKI_URL"]
@@ -60,7 +64,9 @@ class Loki:
                     "streams": [
                         {
                             "stream": tags,
-                            "values": [[curr_datetime, f"[ERROR] {msg} \n {traceback.format_exc()}"]],
+                            "values": [
+                                [curr_datetime, f"[ERROR] {msg} \n {traceback.format_exc()}"]
+                            ],
                         }
                     ]
                 }
@@ -71,7 +77,12 @@ class Loki:
                     "streams": [
                         {
                             "stream": tags,
-                            "values": [[curr_datetime, f"[ERROR] {msg} \n {''.join(traceback.format_exception(etype=type(exception),value=exception,tb=exception.__traceback__))}"]],
+                            "values": [
+                                [
+                                    curr_datetime,
+                                    f"[ERROR] {msg} \n {''.join(traceback.format_exception(etype=type(exception),value=exception,tb=exception.__traceback__))}",
+                                ]
+                            ],
                         }
                     ]
                 }
@@ -83,4 +94,4 @@ class Loki:
             print("Error posting to Loki")
         else:
             print(f"[ERROR] {msg}")
-            #print(traceback.format_exc())
+            # print(traceback.format_exc())
