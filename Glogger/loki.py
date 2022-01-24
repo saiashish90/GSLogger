@@ -9,7 +9,6 @@ class Loki:
         if url:
             self.url = url
         if isinstance(config, BaseSettings):
-            print("yes")
             self.url = config.url
         else:
             try:
